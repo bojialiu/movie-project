@@ -2,7 +2,10 @@
 
 This is the backend implementation of movie recommender system. 
 
-resource folder -- datasets
+resource link:
+
+movie metadata: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?select=movies_metadata.csv
+rating: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?select=ratings_small.csv
 
 Capstone.ipynb -- network-based system that recommend the most similar movie based on two movies user inputs
 
