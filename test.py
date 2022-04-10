@@ -2,11 +2,15 @@ import streamlit as st
 from network import movie_matcher
 
 
+
+
 st.set_page_config(
     page_title="The Movie Project",
     page_icon = "🎬",
     layout = "wide"
 )
+
+
 # ======== title ========
 st.title("️🎥 MADS Capstone - Project Movie Night")
 st.subheader("⚡️ An Network+NLP based movie selector that makes no compromise!")

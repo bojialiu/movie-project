@@ -14,13 +14,13 @@ import ast
 import csv
 import pickle
 
-# read files
+# # read files
 metadata_df = pd.read_csv('dataset/network_metadata.zip', compression='zip', header=0, sep=',')
 G = pickle.load(open('dataset/graph.txt','rb'))
 
 #get cosine similarity matrix of vectorized summaries
-tfidf_summary = TfidfVectorizer(stop_words='english',max_df=0.3,max_features=3000).fit_transform(metadata_df['Summary'])
-cosine_similarity = linear_kernel(tfidf_summary, tfidf_summary)
+# tfidf_summary = TfidfVectorizer(stop_words='english',max_df=0.3,max_features=3000).fit_transform(metadata_df['Summary'])
+# cosine_similarity = linear_kernel(tfidf_summary, tfidf_summary)
 
 #gets the shortest paths from above network given two movie title inputs to create cast_score
 
@@ -40,11 +40,11 @@ def cast_paths(movie1, movie2):
     return cast_score
 
 #get all cosine similarities for one movie. helper func for cos_sim_match
-def get_cos_sim(title, cos_sim = cosine_similarity):
-    index = metadata_df.index[metadata_df['title'] == title]
-    cs = cosine_similarity[index][0]
-    cs[index] = 0 #set cosine sim with self to zero so we don't recommend same movie as input
-    return cs
+# def get_cos_sim(title, cos_sim = cosine_similarity):
+#     index = metadata_df.index[metadata_df['title'] == title]
+#     cs = cosine_similarity[index][0]
+#     cs[index] = 0 #set cosine sim with self to zero so we don't recommend same movie as input
+#     return cs
 
 #given values and assuming keys are movie title, create dictionary. helper func for cos_sim_match
 def list_to_dict(values):
@@ -54,11 +54,11 @@ def list_to_dict(values):
     return dictionary
 
 #get cosine_sim for both movie inputs and add together for cosine_sim score
-def cos_sim_match(movie1, movie2):
-    cs_movie1 = get_cos_sim(title = movie1)
-    cs_movie2 = get_cos_sim(title = movie2)
-    summary_score = list_to_dict(cs_movie1*np.max(cs_movie2) + cs_movie2*np.max(cs_movie1))
-    return dict(summary_score)
+# def cos_sim_match(movie1, movie2):
+#     cs_movie1 = get_cos_sim(title = movie1)
+#     cs_movie2 = get_cos_sim(title = movie2)
+#     summary_score = list_to_dict(cs_movie1*np.max(cs_movie2) + cs_movie2*np.max(cs_movie1))
+#     return dict(summary_score)
 
 # read genre dict
 read_dict = pd.read_csv('dataset/genres.csv').to_dict('list')
@@ -153,7 +153,7 @@ def movie_matcher(movie1, movie2):
     user_query_2, movie2 = fuzzy_match(movie2)
 
     #get each score for movie combo
-    summary_score = cos_sim_match(movie1, movie2)
+    # summary_score = cos_sim_match(movie1, movie2)
     cast_score = cast_paths(movie1, movie2)
     genre_score = match_genres(movie1, movie2)
     vote_score = range_score(movie1, movie2, 'vote_average')
@@ -167,13 +167,15 @@ def movie_matcher(movie1, movie2):
     w5 = 1
 
     #update scores with weights
-    summary_score.update((x,y*w1) for x,y in summary_score.items())
+    # summary_score.update((x,y*w1) for x,y in summary_score.items())
     cast_score.update((x,y*w2) for x,y in cast_score.items())
     genre_score.update((x,y*w3) for x,y in genre_score.items())
     vote_score.update((x,y*w4) for x,y in vote_score.items())
     popularity_score.update((x,y*w5) for x,y in popularity_score.items())
 
-    final_score = Counter(summary_score) + Counter(cast_score) + Counter(genre_score) \
+    # final_score = Counter(summary_score) + Counter(cast_score) + Counter(genre_score) \
+    #                 + Counter(vote_score) + Counter(popularity_score)
+    final_score = Counter(cast_score) + Counter(genre_score) \
                     + Counter(vote_score) + Counter(popularity_score)
     final_score = sorted(final_score.items(), key=lambda item: item[1], reverse=True)
 

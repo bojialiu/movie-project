@@ -3,6 +3,7 @@ import pandas as pd
 import altair as alt
 import csv
 from random import randint, seed
+from network import movie_matcher
 
 # helper functions
 
@@ -89,6 +90,7 @@ def main():
         if movie_input1 != "" and movie_input2 != "":
             with st.spinner("Generating a baby movie for " + movie_input1 + " + " + movie_input2):
                 result_area.write(movie_input1 + " + " + movie_input2 + " = ...")
+                result_movie_title = movie_matcher(movie_input1,movie_input2)[0][0]
                 with res_col:
                     st.subheader("🎬 " + result_movie_title)
                     st.markdown(result_movie_rating,unsafe_allow_html=True)
