@@ -11,6 +11,9 @@ def space(num_lines=1):
     for _ in range(num_lines):
         st.write("")
 
+def page_switcher(page):
+    st.session_state.runpage = page
+
 # constants & settings
 seed = 42
 pd.set_option('display.max_colwidth', None)
@@ -35,6 +38,21 @@ def main():
     st.sidebar.markdown("## **Source Code**")
     st.sidebar.markdown("[GitHub Link](https://github.com/bojialiu/movie-project)",unsafe_allow_html=True)
 
+    # ======== page control ========
+    current_page = "option1"
+    btn1 = st.button("Let's decide a movie for the movie night!")
+    btn2 = st.button('People like me also like...')
+    if btn1 and current_page == 'option2':
+        network_model_page()
+        current_page = "option1"
+    if btn2 and current_page == 'option1':
+        st.title("This is the User-Based page!")
+        st.image('assets/girl.png')
+        current_page = "option2"
+    else:
+        network_model_page()
+
+def network_model_page():
     col1, col_space, col2 = st.columns([7,1,10])
 
     with col1:
@@ -45,7 +63,7 @@ def main():
 
         # space(2)
         # ======== input movies========
-        st.markdown("#### **_Please enter two parent movies_**")
+        st.markdown("#### **_Please enter two parent movies_** ⬇️")
         random_button = st.button("Try something random!")
         movie1 = st.empty()
         movie2 = st.empty()
@@ -119,6 +137,7 @@ def main():
     # res = result_area.text_area("Resulting Baby Movie:")
 
     # ======== side bar ========
+
 
 
 if __name__ == '__main__':
