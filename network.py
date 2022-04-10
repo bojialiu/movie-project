@@ -22,6 +22,23 @@ G = pickle.load(open('dataset/graph.txt','rb'))
 tfidf_summary = TfidfVectorizer(stop_words='english',max_df=0.3,max_features=3000).fit_transform(metadata_df['Summary'])
 cosine_similarity = linear_kernel(tfidf_summary, tfidf_summary)
 
+#gets the shortest paths from above network given two movie title inputs to create cast_score
+
+def cast_paths(movie1, movie2):
+    #shortest_path = nx.shortest_path_length(G, source=movie1, target=movie2)
+    cast_score = dict.fromkeys(metadata_df['title'], 0)
+    for path in nx.all_simple_paths(G, source=movie1, target=movie2, cutoff = 2):#shortest_path):
+        cast_score[path[0]] += 2
+    for path in nx.all_simple_paths(G, source=movie1, target=movie2, cutoff = 3):
+        for movie in path:
+            if cast_score[movie] == 0:
+                cast_score[movie] += 1
+
+    cast_score[movie1] = 0
+    cast_score[movie2] = 0
+
+    return cast_score
+
 #get all cosine similarities for one movie. helper func for cos_sim_match
 def get_cos_sim(title, cos_sim = cosine_similarity):
     index = metadata_df.index[metadata_df['title'] == title]
