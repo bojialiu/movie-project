@@ -3,16 +3,17 @@ import pandas as pd
 import altair as alt
 import csv
 from random import randint, seed
-from network import movie_matcher
-
+from network_model import movie_matcher, metadata_df
+import ast
 # helper functions
 
 def space(num_lines=1):
     for _ in range(num_lines):
         st.write("")
 
-
+# constants & settings
 seed = 42
+pd.set_option('display.max_colwidth', None)
 
 def main():
     # ======== page config ========
@@ -76,10 +77,10 @@ def main():
     "________"
 
 
-    result_movie_title = "WALLE-E"
-    result_movie_intro = "In a distant, but not so unrealistic, future where mankind has abandoned earth because it has become covered with trash from products sold by the powerful multi-national Buy N Large corporation, WALL-E, a garbage collecting robot has been left to clean up the mess. Mesmerized with trinkets of Earth's history and show tunes, WALL-E is alone on Earth except for a sprightly pet cockroach. One day, EVE, a sleek (and dangerous) reconnaissance robot, is sent to Earth to find proof that life is once again sustainable. WALL-E falls in love with EVE. WALL-E rescues EVE from a dust storm and shows her a living plant he found amongst the rubble. Consistent with her 'directive', EVE takes the plant and automatically enters a deactivated state except for a blinking green beacon. WALL-E, doesn't understand what has happened to his new friend, but, true to his love, he protects her from wind, rain, and lightning, even as she is unresponsive. One day a massive ship comes to reclaim EVE, but WALL-E, out of love or loneliness, hitches a ride on the outside of the ship to rescue EVE. The ship arrives back at a large space cruise ship, which is carrying all of the humans who evacuated Earth 700 years earlier. The people of Earth ride around this space resort on hovering chairs which give them a constant feed of TV and video chatting. They drink all of their meals through a straw out of laziness and/or bone loss, and are all so fat that they can barely move. When the auto-pilot computer, acting on hastily-given instructions sent many centuries before, tries to prevent the people of Earth from returning by stealing the plant, WALL-E, EVE, the portly captain, and a band of broken robots stage a mutiny."
-    result_movie_rating = "<b>IMDB: 8.4/10</b>"
-    result_movie_director = "Directed by <b>Andrew Stanton</b>"
+    # result_movie_title = "WALLE-E"
+    # result_movie_intro = "In a distant, but not so unrealistic, future where mankind has abandoned earth because it has become covered with trash from products sold by the powerful multi-national Buy N Large corporation, WALL-E, a garbage collecting robot has been left to clean up the mess. Mesmerized with trinkets of Earth's history and show tunes, WALL-E is alone on Earth except for a sprightly pet cockroach. One day, EVE, a sleek (and dangerous) reconnaissance robot, is sent to Earth to find proof that life is once again sustainable. WALL-E falls in love with EVE. WALL-E rescues EVE from a dust storm and shows her a living plant he found amongst the rubble. Consistent with her 'directive', EVE takes the plant and automatically enters a deactivated state except for a blinking green beacon. WALL-E, doesn't understand what has happened to his new friend, but, true to his love, he protects her from wind, rain, and lightning, even as she is unresponsive. One day a massive ship comes to reclaim EVE, but WALL-E, out of love or loneliness, hitches a ride on the outside of the ship to rescue EVE. The ship arrives back at a large space cruise ship, which is carrying all of the humans who evacuated Earth 700 years earlier. The people of Earth ride around this space resort on hovering chairs which give them a constant feed of TV and video chatting. They drink all of their meals through a straw out of laziness and/or bone loss, and are all so fat that they can barely move. When the auto-pilot computer, acting on hastily-given instructions sent many centuries before, tries to prevent the people of Earth from returning by stealing the plant, WALL-E, EVE, the portly captain, and a band of broken robots stage a mutiny."
+    # result_movie_rating = "<b>IMDB: 8.4/10</b>"
+    # result_movie_director = "Directed by <b>Andrew Stanton</b>"
 
     result_area = st.empty()
 
@@ -90,13 +91,24 @@ def main():
         if movie_input1 != "" and movie_input2 != "":
             with st.spinner("Generating a baby movie for " + movie_input1 + " + " + movie_input2):
                 result_area.write(movie_input1 + " + " + movie_input2 + " = ...")
+                # results here
                 result_movie_title = movie_matcher(movie_input1,movie_input2)[0][0]
+                result_movie_intro = metadata_df[metadata_df['title']==result_movie_title]['overview'].to_string(index=False)
+                result_movie_rating = f"<b>IMDB: {metadata_df[metadata_df['title']==result_movie_title]['vote_average'].to_string(index=False)}/10</b>"
+                directors = ", ".join(ast.literal_eval(metadata_df[metadata_df['title']==result_movie_title]['director'].to_string(index=False)))
+                result_movie_director = f"Directed by <b>{directors}</b>"
+                imdb_id = metadata_df[metadata_df['title']==result_movie_title]['imdbId'].astype(int).to_string(index=False).rjust(7,'0')
+                result_imdb_link = f"https://www.imdb.com/title/tt{imdb_id}/"
+                cast = ", ".join(ast.literal_eval(metadata_df[metadata_df['title']==result_movie_title]['cast'].to_string(index=False))[:5])
+                result_movie_cast = f"Cast: <b>{cast}</b>"
                 with res_col:
                     st.subheader("🎬 " + result_movie_title)
                     st.markdown(result_movie_rating,unsafe_allow_html=True)
                     st.markdown(result_movie_director,unsafe_allow_html=True)
+                    st.markdown(result_movie_cast,unsafe_allow_html=True)
                     st.markdown("#### Introduction")
                     st.markdown(result_movie_intro,unsafe_allow_html=True)
+                    st.markdown(f'Go to IMDb Page: [{result_imdb_link}]({result_imdb_link})')
                 with rate_col:
                     space(3)
                     st.radio("😌 How do you like the result?",(1,2,3,4,5))
