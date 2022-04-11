@@ -41,7 +41,7 @@ def refresh_random_movies():
 def common():
     # ======== title ========
     st.title("️🎥 MADS Capstone - Project Movie Night")
-    st.subheader("⚡️ A movie selector that makes no compromise!")
+    st.subheader("⚡️ Your new one-stop movie selector that makes no compromise!")
     # ======== side bar ========
     st.sidebar.write("")
     st.sidebar.image("assets/movie_logo.png",width=110)
@@ -49,7 +49,14 @@ def common():
     if st.sidebar.button("Model Selection",on_click=page_switcher,args=(main,)):
         st.experimental_rerun()
     st.sidebar.markdown("## **About this project**")
-    st.sidebar.markdown("Placeholder for **a _good_ introduction**\nPlaceholder for **a _good_ introduction**\nPlaceholder for **a _good_ introduction**")
+    intro = '''
+        Can't decide what to wear,
+        don't know what to eat for lunch，
+        struggling with what to watch on your next movie night...
+
+        Life is full of annoying choices, so at least this time, let us help you out!!
+        '''
+    st.sidebar.markdown(intro)
     st.sidebar.markdown("## **Contributors**")
     st.sidebar.markdown("Chloe Zhang <br> Michael Conrad <br> Bojia Liu",unsafe_allow_html=True)
     st.sidebar.markdown("## **Source Code**")
@@ -58,17 +65,19 @@ def common():
 
 def main():
     common()
+    space()
     st.markdown('## <center>👉 Model Selection 👈</center>',unsafe_allow_html=True)
+    space()
     model1, model2 = st.columns(2)
     with model1:
         st.markdown("#### 👭 Movie night with a friend")
-        st.markdown("In this model, you can select two parent movies and generate a baby movie based on movie metadata + intro and plot!")
+        st.markdown("Still struggling with what to watch on your next movie night? In this <b>Network+NLP</b> based model, you and your friend can each select a parent movie and generate a baby movie based on their metadata & plot!",unsafe_allow_html=True)
         btn1 = st.button('Use the NLP + Network Model',on_click=page_switcher,args=(network_model_page,))
         space(3)
         st.image('assets/watch_tv_img.png')
     with model2:
         st.markdown("#### 🙋‍♀️ Movie night with myself")
-        st.markdown("In this model, we are using collaborative filtering to your selection and thousands of users rated their preference on IMDb!")
+        st.markdown("Do you want people with similar tastes to recommend movies to you? In this model, we are using a <b>collaborative filtering</b> to help you pick your next movie to watch based on thousands of users on IMDb!",unsafe_allow_html=True)
         btn2 = st.button('Use the Collaborative Filtering Model',on_click=page_switcher,args=(collab_model_page,))
         st.image('assets/girl.png')
     if btn1 or btn2:
