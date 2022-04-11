@@ -32,11 +32,11 @@ def page_switcher(page):
     st.session_state.runpage = page
 
 def refresh_random_movies():
-    f = open('temp.csv','w+') # empty the reandom file
+    f = open('dataset/temp.csv','w+') # empty the reandom file
     f.close()
     movies = provide_movies_to_user(8)
     df = pd.DataFrame(movies)
-    df.to_csv('temp.csv',header=None,index=False)
+    df.to_csv('dataset/temp.csv',header=None,index=False)
 
 def common():
     # ======== title ========
@@ -109,7 +109,7 @@ def network_model_page():
             refresh_random_movies()
 
         try:
-            random_df = pd.read_csv("temp.csv",header=None,index_col=False)
+            random_df = pd.read_csv("dataset/temp.csv",header=None,index_col=False)
             input1 = random_df[0][0]
             input2 = random_df[1][0]
         except:
@@ -130,7 +130,6 @@ def network_model_page():
     res_col, x, rate_col = st.columns([14,1,7])
 
     if submit_button:
-        # f = open('temp.csv','w+')
         if movie_input1 != "" and movie_input2 != "":
             with st.spinner("Generating a baby movie for " + movie_input1 + " + " + movie_input2):
                 result_area.write(movie_input1 + " + " + movie_input2 + " = ...")
@@ -181,7 +180,7 @@ def collab_model_page():
         with st.form("my_form", clear_on_submit=False):
             # streamlit doesn't work well here because it refreshes every time
             #  retrive random values
-            random_movies = pd.read_csv("temp.csv",header=None,index_col=False,).values.tolist()
+            random_movies = pd.read_csv("dataset/temp.csv",header=None,index_col=False,).values.tolist()
             movie_lst = [item for sublist in random_movies for item in sublist][:8]
             st.write("Please rate the movies:")
             v1 = st.select_slider(str(movie_lst[0]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
