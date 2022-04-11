@@ -55,19 +55,6 @@ def common():
     st.sidebar.markdown("## **Source Code**")
     st.sidebar.markdown("[GitHub Link](https://github.com/bojialiu/movie-project)",unsafe_allow_html=True)
 
-    # ======== page control ========
-    # current_page = "option1"
-    # btn1 = st.button("Let's decide a movie for the movie night!")
-    # btn2 = st.button('People like me also like...')
-    # if btn1 and current_page == 'option2':
-    #     network_model_page()
-    #     current_page = "option1"
-    # if btn2 and current_page == 'option1':
-    #     collab_model_page()
-    #     current_page = "option2"
-    # else:
-    #     network_model_page()
-
 
 def main():
     common()
