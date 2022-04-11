@@ -52,7 +52,7 @@ def common():
     st.sidebar.markdown("## **About this project**")
     intro = '''
         Can't decide what to wear,
-        don't know what to eat for lunch, 
+        don't know what to eat for lunch,
         struggling with what to watch on your next movie night...
 
         Life is full of annoying choices, so at least this time, let us help you out!!
@@ -113,7 +113,7 @@ def network_model_page():
         # ======== input movies========
         st.markdown("#### **_Please enter two parent movies_** ⬇️")
         random_button = st.button("Try something random!")
-        st.write('Replace the following movies with your favorite ones!')
+        st.write('🔄 Replace the following movies with your favorite ones!')
         movie1 = st.empty()
         movie2 = st.empty()
 
@@ -192,7 +192,8 @@ def collab_model_page():
             #  retrive random values
             random_movies = pd.read_csv("dataset/temp.csv",header=None,index_col=False,).values.tolist()
             movie_lst = [item for sublist in random_movies for item in sublist][:8]
-            st.write("Please rate the movies:")
+            st.markdown("<b>Please rate the following movies:</b>",unsafe_allow_html=True)
+            # st.markdown(f"<b>{str(movie_lst[0])}</b>",unsafe_allow_html=True)
             v1 = st.select_slider(str(movie_lst[0]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
             v2 = st.select_slider(str(movie_lst[1]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
             v3 = st.select_slider(str(movie_lst[2]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
@@ -213,8 +214,7 @@ def collab_model_page():
     with cf_col2:
         st.image('assets/girl.png')
         st.markdown("#### <b>Haven't seen most of the movies on the list?</b>",unsafe_allow_html=True)
-        st.write("👇  👇  👇")
-        if st.button('Refresh movie options'):
+        if st.button('🔄 Refresh movie options'):
             refresh_random_movies()
 
     st.write("-----")
