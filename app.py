@@ -52,7 +52,7 @@ def common():
     st.sidebar.markdown("## **About this project**")
     intro = '''
         Can't decide what to wear,
-        don't know what to eat for lunch，
+        don't know what to eat for lunch, 
         struggling with what to watch on your next movie night...
 
         Life is full of annoying choices, so at least this time, let us help you out!!
@@ -212,7 +212,7 @@ def collab_model_page():
 
     with cf_col2:
         st.image('assets/girl.png')
-        st.markdown("#### <b>Never seen most of the movies in this list?</b>",unsafe_allow_html=True)
+        st.markdown("#### <b>Haven't seen most of the movies on the list?</b>",unsafe_allow_html=True)
         st.write("👇  👇  👇")
         if st.button('Refresh movie options'):
             refresh_random_movies()
