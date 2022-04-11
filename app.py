@@ -99,7 +99,7 @@ def main():
         height=0
     )
 
-    st.write(f"Page load: {st.session_state.counter}")
+    # st.write(f"Page load: {st.session_state.counter}")
 
 def network_model_page():
     # title & side bar
