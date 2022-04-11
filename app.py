@@ -170,13 +170,11 @@ def collab_model_page():
         '😐 ‍Neutral/Never Watched':0,
         '👍 Like':10
     }
-    result_movie_name = ""
+    result_movie_names = ""
     results_title_text = ""
-
-    cf_col1, cf_col2 = st.columns([3,2])
-
+    st.markdown("### First, let's find out what kind of movies you like! ")
+    cf_col1, cf_col2 = st.columns([2,1.8])
     with cf_col1:
-        st.markdown("### First, let's find out what kind of movies you like")
         with st.form("my_form", clear_on_submit=False):
             # streamlit doesn't work well here because it refreshes every time
             #  retrive random values
@@ -196,9 +194,9 @@ def collab_model_page():
             if submitted:
                 output_lst = [options_dict[v1],options_dict[v2],options_dict[v3],options_dict[v4],options_dict[v5],options_dict[v6],options_dict[v7],options_dict[v8]]
                 # st.write(output_lst)
-                result_movie_name = recommend_to_user(random_movies,output_lst)
+                result_movie_names = recommend_to_user(random_movies,output_lst)
                 # st.write(result_movie_name)
-                results_title_text = "People like you also like..."
+                results_title_text = "People with similar movie taste also like..."
 
     with cf_col2:
         st.image('assets/girl.png')
@@ -209,7 +207,30 @@ def collab_model_page():
 
     st.write("-----")
     st.subheader(results_title_text)
-    st.write(result_movie_name)
+    for result_movie_title in result_movie_names:
+        # if title not in metadata_df, don't show in results
+        try:
+            result_movie_intro = metadata_df[metadata_df['title']==result_movie_title]['overview'].to_string(index=False)
+            rating = metadata_df[metadata_df['title']==result_movie_title]['vote_average'].to_string(index=False)
+            result_movie_rating = f"<b>IMDB: {rating}/10</b>"
+            directors = ", ".join(ast.literal_eval(metadata_df[metadata_df['title']==result_movie_title]['director'].to_string(index=False)))
+            result_movie_director = f"Directed by <b>{directors}</b>"
+            imdb_id = metadata_df[metadata_df['title']==result_movie_title]['imdbId'].astype(int).to_string(index=False).rjust(7,'0')
+            result_imdb_link = f"https://www.imdb.com/title/tt{imdb_id}/"
+            cast = ", ".join(ast.literal_eval(metadata_df[metadata_df['title']==result_movie_title]['cast'].to_string(index=False))[:5])
+            result_movie_cast = f"Cast: <b>{cast}</b>"
+            st.subheader("🎬 " + result_movie_title)
+            st.markdown(result_movie_rating,unsafe_allow_html=True)
+            st.markdown(result_movie_director,unsafe_allow_html=True)
+            st.markdown(result_movie_cast,unsafe_allow_html=True)
+            st.markdown("#### Introduction")
+            st.markdown(result_movie_intro,unsafe_allow_html=True)
+            st.markdown(f'Go to IMDb Page: [{result_imdb_link}]({result_imdb_link})')
+            st.write('-----')
+        except:
+            print("")
+
+    # st.write(result_movie_name)
 
 if __name__ == '__main__':
     if 'runpage' not in st.session_state :
