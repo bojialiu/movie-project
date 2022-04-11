@@ -11,11 +11,6 @@ Capstone.ipynb -- network-based system that recommend the most similar movie bas
 
 user-based recommender.ipynb -- user-based collavrative filtering system that recommend movie based on user behaviour 
 
-## Team Members
-- Chloe Zhang
-- Michael Conrad
-- Bojia Liu
-
 
 ## How To Use
 
@@ -23,3 +18,8 @@ user-based recommender.ipynb -- user-based collavrative filtering system that re
 # Installing requirements
 streamlit run app.py
 ```
+
+## Team Members
+- Chloe Zhang ([GitHub](https://github.com/eolhcz))
+- Michael Conrad
+- Bojia Liu
