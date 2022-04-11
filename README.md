@@ -1,6 +1,6 @@
 # movie-project
 
-This is the backend implementation of movie recommender system. 
+This is the backend implementation of movie recommender system with two machine learning models based on NLP+Network and Collaborative Filtering.
 
 ## Dataset
 
