@@ -2,9 +2,26 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 import csv
-from random import randint, seed
-from network_model import movie_matcher, metadata_df
+from network_model import movie_matcher
+from collab_model import provide_movies_to_user, recommend_to_user
 import ast
+
+# ======== page config ========
+st.set_page_config(
+    page_title="The Movie Project",
+    page_icon = "🎬",
+    layout = "wide"
+)
+
+@st.cache
+def load_movies_df():
+    df = pd.read_csv('dataset/network_metadata.zip', compression='zip', header=0, sep=',')
+    return(df)
+metadata_df = load_movies_df()
+
+# constants & settings
+pd.set_option('display.max_colwidth', None)
+
 # helper functions
 
 def space(num_lines=1):
@@ -14,23 +31,23 @@ def space(num_lines=1):
 def page_switcher(page):
     st.session_state.runpage = page
 
-# constants & settings
-seed = 42
-pd.set_option('display.max_colwidth', None)
+def refresh_random_movies():
+    f = open('temp.csv','w+') # empty the reandom file
+    f.close()
+    movies = provide_movies_to_user(8)
+    df = pd.DataFrame(movies)
+    df.to_csv('temp.csv',header=None,index=False)
 
-def main():
-    # ======== page config ========
-    st.set_page_config(
-        page_title="The Movie Project",
-        page_icon = "🎬",
-        layout = "wide"
-    )
+def common():
     # ======== title ========
     st.title("️🎥 MADS Capstone - Project Movie Night")
-    st.subheader("⚡️ An Network+NLP based movie selector that makes no compromise!")
+    st.subheader("⚡️ A movie selector that makes no compromise!")
     # ======== side bar ========
     st.sidebar.write("")
     st.sidebar.image("assets/movie_logo.png",width=110)
+    st.sidebar.write("")
+    if st.sidebar.button("Model Selection",on_click=page_switcher,args=(main,)):
+        st.experimental_rerun()
     st.sidebar.markdown("## **About this project**")
     st.sidebar.markdown("Placeholder for **a _good_ introduction**\nPlaceholder for **a _good_ introduction**\nPlaceholder for **a _good_ introduction**")
     st.sidebar.markdown("## **Contributors**")
@@ -39,20 +56,44 @@ def main():
     st.sidebar.markdown("[GitHub Link](https://github.com/bojialiu/movie-project)",unsafe_allow_html=True)
 
     # ======== page control ========
-    current_page = "option1"
-    btn1 = st.button("Let's decide a movie for the movie night!")
-    btn2 = st.button('People like me also like...')
-    if btn1 and current_page == 'option2':
-        network_model_page()
-        current_page = "option1"
-    if btn2 and current_page == 'option1':
-        st.title("This is the User-Based page!")
+    # current_page = "option1"
+    # btn1 = st.button("Let's decide a movie for the movie night!")
+    # btn2 = st.button('People like me also like...')
+    # if btn1 and current_page == 'option2':
+    #     network_model_page()
+    #     current_page = "option1"
+    # if btn2 and current_page == 'option1':
+    #     collab_model_page()
+    #     current_page = "option2"
+    # else:
+    #     network_model_page()
+
+
+def main():
+    common()
+    st.markdown('## <center>👉 Model Selection 👈</center>',unsafe_allow_html=True)
+    model1, model2 = st.columns(2)
+    with model1:
+        st.markdown("#### 👭 Movie night with a friend")
+        st.markdown("In this model, you can select two parent movies and generate a baby movie based on movie metadata + intro and plot!")
+        btn1 = st.button('Use the NLP + Network Model',on_click=page_switcher,args=(network_model_page,))
+        space(3)
+        st.image('assets/watch_tv_img.png')
+    with model2:
+        st.markdown("#### 🙋‍♀️ Movie night with myself")
+        st.markdown("In this model, we are using collaborative filtering to your selection and thousands of users rated their preference on IMDb!")
+        btn2 = st.button('Use the Collaborative Filtering Model',on_click=page_switcher,args=(collab_model_page,))
         st.image('assets/girl.png')
-        current_page = "option2"
-    else:
-        network_model_page()
+    if btn1 or btn2:
+        st.experimental_rerun()
 
 def network_model_page():
+
+    # title & side bar
+    common()
+    # if st.sidebar.button("Back to Mode Selection",on_click=page_switcher,args=(main,)):
+    #     st.experimental_rerun()
+
     col1, col_space, col2 = st.columns([7,1,10])
 
     with col1:
@@ -68,19 +109,13 @@ def network_model_page():
         movie1 = st.empty()
         movie2 = st.empty()
 
-
         if random_button:
-            f = open('temp.csv','w+') # empty the reandom file
-            f.close()
-            m1 = randint(0,100) #random movie1
-            m2 = randint(0,100) #random movie2
-            df = pd.DataFrame([m1,m2])
-            df.to_csv('temp.csv',header=None,index=False)
+            refresh_random_movies()
 
         try:
             random_df = pd.read_csv("temp.csv",header=None,index_col=False)
-            input1 = random_df.iloc[0].to_string().split()[1]
-            input2 = random_df.iloc[1].to_string().split()[1]
+            input1 = random_df[0][0]
+            input2 = random_df[1][0]
         except:
             input1 = ""
             input2 = ""
@@ -92,20 +127,14 @@ def network_model_page():
         submit_button = st.button("Submit")
 
     # ======== result showcase ========
-    "________"
-
-
-    # result_movie_title = "WALLE-E"
-    # result_movie_intro = "In a distant, but not so unrealistic, future where mankind has abandoned earth because it has become covered with trash from products sold by the powerful multi-national Buy N Large corporation, WALL-E, a garbage collecting robot has been left to clean up the mess. Mesmerized with trinkets of Earth's history and show tunes, WALL-E is alone on Earth except for a sprightly pet cockroach. One day, EVE, a sleek (and dangerous) reconnaissance robot, is sent to Earth to find proof that life is once again sustainable. WALL-E falls in love with EVE. WALL-E rescues EVE from a dust storm and shows her a living plant he found amongst the rubble. Consistent with her 'directive', EVE takes the plant and automatically enters a deactivated state except for a blinking green beacon. WALL-E, doesn't understand what has happened to his new friend, but, true to his love, he protects her from wind, rain, and lightning, even as she is unresponsive. One day a massive ship comes to reclaim EVE, but WALL-E, out of love or loneliness, hitches a ride on the outside of the ship to rescue EVE. The ship arrives back at a large space cruise ship, which is carrying all of the humans who evacuated Earth 700 years earlier. The people of Earth ride around this space resort on hovering chairs which give them a constant feed of TV and video chatting. They drink all of their meals through a straw out of laziness and/or bone loss, and are all so fat that they can barely move. When the auto-pilot computer, acting on hastily-given instructions sent many centuries before, tries to prevent the people of Earth from returning by stealing the plant, WALL-E, EVE, the portly captain, and a band of broken robots stage a mutiny."
-    # result_movie_rating = "<b>IMDB: 8.4/10</b>"
-    # result_movie_director = "Directed by <b>Andrew Stanton</b>"
+    st.write("-----")
 
     result_area = st.empty()
 
     res_col, x, rate_col = st.columns([14,1,7])
 
     if submit_button:
-        f = open('temp.csv','w+')
+        # f = open('temp.csv','w+')
         if movie_input1 != "" and movie_input2 != "":
             with st.spinner("Generating a baby movie for " + movie_input1 + " + " + movie_input2):
                 result_area.write(movie_input1 + " + " + movie_input2 + " = ...")
@@ -129,16 +158,65 @@ def network_model_page():
                     st.markdown(f'Go to IMDb Page: [{result_imdb_link}]({result_imdb_link})')
                 with rate_col:
                     space(3)
-                    st.radio("😌 How do you like the result?",(1,2,3,4,5))
+                    # st.radio("😌 How do you like the result?",(1,2,3,4,5))
+                    st.image("assets/girl.png")
         if movie_input1 == "" or movie_input2 == "":
             st.markdown("### *👀 Did you forgot to enter the movies?*",unsafe_allow_html=True)
         # else:
         #     st.markdown("### *😭 Sorry, we can't find the movies in our DB...*",unsafe_allow_html=True)
-    # res = result_area.text_area("Resulting Baby Movie:")
 
-    # ======== side bar ========
+def collab_model_page():
 
+    # title & side bar
+    common()
+    # constants
+    options_dict = {
+        '👎 Dislike':-10,
+        '😐 ‍Neutral/Never Watched':0,
+        '👍 Like':10
+    }
+    result_movie_name = ""
+    results_title_text = ""
 
+    cf_col1, cf_col2 = st.columns([3,2])
+
+    with cf_col1:
+        st.markdown("### First, let's find out what kind of movies you like")
+        with st.form("my_form", clear_on_submit=False):
+            # streamlit doesn't work well here because it refreshes every time
+            #  retrive random values
+            random_movies = pd.read_csv("temp.csv",header=None,index_col=False,).values.tolist()
+            movie_lst = [item for sublist in random_movies for item in sublist][:8]
+            st.write("Please rate the movies:")
+            v1 = st.select_slider(str(movie_lst[0]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v2 = st.select_slider(str(movie_lst[1]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v3 = st.select_slider(str(movie_lst[2]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v4 = st.select_slider(str(movie_lst[3]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v5 = st.select_slider(str(movie_lst[4]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v6 = st.select_slider(str(movie_lst[5]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v7 = st.select_slider(str(movie_lst[6]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            v8 = st.select_slider(str(movie_lst[7]),options=['👎 Dislike', '😐 ‍Neutral/Never Watched', '👍 Like'],value='😐 ‍Neutral/Never Watched')
+            # Every form must have a submit button.
+            submitted = st.form_submit_button("Submit")
+            if submitted:
+                output_lst = [options_dict[v1],options_dict[v2],options_dict[v3],options_dict[v4],options_dict[v5],options_dict[v6],options_dict[v7],options_dict[v8]]
+                # st.write(output_lst)
+                result_movie_name = recommend_to_user(random_movies,output_lst)
+                # st.write(result_movie_name)
+                results_title_text = "People like you also like..."
+
+    with cf_col2:
+        st.image('assets/girl.png')
+        st.markdown("#### <b>Never seen most of the movies in this list?</b>",unsafe_allow_html=True)
+        st.write("👇  👇  👇")
+        if st.button('Refresh movie options'):
+            refresh_random_movies()
+
+    st.write("-----")
+    st.subheader(results_title_text)
+    st.write(result_movie_name)
 
 if __name__ == '__main__':
-    main()
+    if 'runpage' not in st.session_state :
+        st.session_state.runpage = main
+    st.session_state.runpage()
