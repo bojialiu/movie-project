@@ -1,4 +1,4 @@
-# movie-project
+# MADS Capstone - Project Movie Night
 
 This is the backend implementation of movie recommender system with two machine learning models based on NLP+Network and Collaborative Filtering.
 
