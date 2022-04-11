@@ -78,7 +78,7 @@ def main():
         st.image('assets/watch_tv_img.png')
     with model2:
         st.markdown("#### 🙋‍♀️ Movie night with myself")
-        st.markdown("Do you want people with similar tastes to recommend movies to you? In this model, we are using a <b>collaborative filtering</b> to help you pick your next movie to watch based on thousands of users on IMDb!",unsafe_allow_html=True)
+        st.markdown("Do you want people with similar tastes to recommend movies to you? In this model, we are using a <b>Collaborative Filtering</b> to help you pick your next movie to watch based on thousands of users on IMDb!",unsafe_allow_html=True)
         btn2 = st.button('Use the Collaborative Filtering Model',on_click=page_switcher,args=(collab_model_page,))
         st.image('assets/girl.png')
     if btn1 or btn2:
