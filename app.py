@@ -5,6 +5,7 @@ import csv
 from network_model import movie_matcher
 from collab_model import provide_movies_to_user, recommend_to_user
 import ast
+import streamlit.components.v1 as components
 
 # ======== page config ========
 st.set_page_config(
@@ -83,25 +84,36 @@ def main():
     if btn1 or btn2:
         st.experimental_rerun()
 
-def network_model_page():
+    if "page" not in st.session_state:
+        st.session_state.page = 0
+    if "counter" not in st.session_state:
+        st.session_state.counter = 1
 
+    components.html(
+        f"""
+            <!--{st.session_state.counter}-->
+            <script>
+                window.parent.document.querySelector('section.main').scrollTo(0, 0);
+            </script>
+        """,
+        height=0
+    )
+
+    st.write(f"Page load: {st.session_state.counter}")
+
+def network_model_page():
     # title & side bar
     common()
-    # if st.sidebar.button("Back to Mode Selection",on_click=page_switcher,args=(main,)):
-    #     st.experimental_rerun()
-
     col1, col_space, col2 = st.columns([7,1,10])
 
     with col1:
-        space()
+        space(2)
         st.image('assets/watch_tv_img.png')
-
     with col2:
-
-        # space(2)
         # ======== input movies========
         st.markdown("#### **_Please enter two parent movies_** ⬇️")
         random_button = st.button("Try something random!")
+        st.write('Replace the following movies with your favorite ones!')
         movie1 = st.empty()
         movie2 = st.empty()
 
