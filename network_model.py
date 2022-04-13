@@ -71,6 +71,8 @@ def kmeans_score(movie1, movie2):
     for movie in summary_score:
         if kmeans_dict[movie] == movie1_label or kmeans_dict[movie] == movie2_label:
             summary_score[movie] = 2
+    summary_score[movie1] = 0
+    summary_score[movie2] = 0
     return summary_score
 
 # read genre dict
@@ -173,7 +175,7 @@ def movie_matcher(movie1, movie2):
     popularity_score = range_score(movie1, movie2, 'popularity')
 
     #weights for each score
-    w1 = 3
+    w1 = 2
     w2 = 1
     w3 = 3
     w4 = 1
