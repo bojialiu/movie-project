@@ -16,7 +16,10 @@ import pickle
 # # read files
 metadata_df = pd.read_csv('dataset/network_metadata.zip', compression='zip', header=0, sep=',')
 G = pickle.load(open('dataset/graph.txt','rb'))
+kmeans_dict =  pickle.load(open('dataset/kmeans.txt', 'rb'))
 
+
+####takes too long to run. imported with pickle#####
 #get cosine similarity matrix of vectorized summaries
 # tfidf_summary = TfidfVectorizer(stop_words='english',max_df=0.3,max_features=3000).fit_transform(metadata_df['Summary'])
 # cosine_similarity = linear_kernel(tfidf_summary, tfidf_summary)
@@ -39,7 +42,7 @@ def cast_paths(movie1, movie2):
     return cast_score
 
 #get all cosine similarities for one movie. helper func for cos_sim_match
-# def get_cos_sim(title, cos_sim = cosine_similarity):
+#def get_cos_sim(title, cos_sim = cosine_similarity):
 #     index = metadata_df.index[metadata_df['title'] == title]
 #     cs = cosine_similarity[index][0]
 #     cs[index] = 0 #set cosine sim with self to zero so we don't recommend same movie as input
@@ -53,11 +56,23 @@ def list_to_dict(values):
     return dictionary
 
 #get cosine_sim for both movie inputs and add together for cosine_sim score
-# def cos_sim_match(movie1, movie2):
-#     cs_movie1 = get_cos_sim(title = movie1)
-#     cs_movie2 = get_cos_sim(title = movie2)
-#     summary_score = list_to_dict(cs_movie1*np.max(cs_movie2) + cs_movie2*np.max(cs_movie1))
-#     return dict(summary_score)
+#def cos_sim_match(movie1, movie2):
+#    cs_movie1 = get_cos_sim(title = movie1)
+#    cs_movie2 = get_cos_sim(title = movie2)
+#    summary_score = list_to_dict(cs_movie1*np.max(cs_movie2) + cs_movie2*np.max(cs_movie1))
+#    return dict(summary_score)
+
+#use kmeans to get around cosine_similarity matrix being too large. Each movie has been assigned a cluster and score favors movies in input clusters
+def kmeans_score(movie1, movie2):
+    movie1_label = kmeans_dict[movie1]
+    movie2_label = kmeans_dict[movie2]
+    summary_score = dict.fromkeys(metadata_df['title'], 1)
+    for movie in summary_score:
+        if kmeans_dict[movie] == movie1_label or kmeans_dict[movie] == movie2_label:
+            summary_score[movie] = 2
+    summary_score[movie1] = 0
+    summary_score[movie2] = 0
+    return summary_score
 
 # read genre dict
 read_dict = pd.read_csv('dataset/genres.csv').to_dict('list')
@@ -152,33 +167,32 @@ def movie_matcher(movie1, movie2):
     user_query_2, movie2 = fuzzy_match(movie2)
 
     #get each score for movie combo
-    # summary_score = cos_sim_match(movie1, movie2)
+    summary_score = kmeans_score(movie1, movie2)
     cast_score = cast_paths(movie1, movie2)
     genre_score = match_genres(movie1, movie2)
     vote_score = range_score(movie1, movie2, 'vote_average')
     popularity_score = range_score(movie1, movie2, 'popularity')
 
     #weights for each score
-    w1 = 3
+    w1 = 2
     w2 = 1
     w3 = 3
     w4 = 1
     w5 = 1
 
     #update scores with weights
-    # summary_score.update((x,y*w1) for x,y in summary_score.items())
+    summary_score.update((x,y*w1) for x,y in summary_score.items())
     cast_score.update((x,y*w2) for x,y in cast_score.items())
     genre_score.update((x,y*w3) for x,y in genre_score.items())
     vote_score.update((x,y*w4) for x,y in vote_score.items())
     popularity_score.update((x,y*w5) for x,y in popularity_score.items())
 
-    # final_score = Counter(summary_score) + Counter(cast_score) + Counter(genre_score) \
-    #                 + Counter(vote_score) + Counter(popularity_score)
-    final_score = Counter(cast_score) + Counter(genre_score) \
-                    + Counter(vote_score) + Counter(popularity_score)
+    final_score = Counter(summary_score) + Counter(cast_score) + Counter(genre_score) \
+                     + Counter(vote_score) + Counter(popularity_score)
+
     final_score = sorted(final_score.items(), key=lambda item: item[1], reverse=True)
 
     print('User Query 1: '+user_query_1+'    Matched to: '+movie1)
     print('User Query 2: '+user_query_2+'    Matched to: '+movie2)
 
-    return final_score[0:10]#summary_score, cast_score, genre_score
+    return final_score[0:10]
