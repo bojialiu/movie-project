@@ -9,7 +9,7 @@ This project holds two different machine learning models to help you select the 
 
 **Web app address:**: https://share.streamlit.io/eolhcz/movie-project/main/app.py 
 
-![People watching TV!](/assets/watch_tv_img.png "Project Movie Night")
+![People watching TV!](/assets/screenshot.png"Project Movie Night")
 
 ## Dataset
 
