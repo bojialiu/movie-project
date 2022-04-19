@@ -242,6 +242,16 @@ def collab_model_page():
         except:
             print("")
 
+    components.html(
+        f"""
+            <!--{st.session_state.counter}-->
+            <script>
+                window.parent.document.querySelector('section.main').scrollTo(0, 0);
+            </script>
+        """,
+        height=0
+    )
+
     # st.write(result_movie_name)
 
 if __name__ == '__main__':

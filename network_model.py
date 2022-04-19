@@ -10,7 +10,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
-import ast
 import csv
 import pickle
 
