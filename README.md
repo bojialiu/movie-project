@@ -37,7 +37,5 @@ This project is distributed under MIT Licence.
 
 ## Team Members
 - Chloe Zhang ([GitHub](https://github.com/eolhcz))
-- Michael Conrad
-- Bojia Liu
 - Michael Conrad ([GitHub](https://github.com/conradma))
 - Bojia Liu ([GitHub](https://github.com/bojialiu))
