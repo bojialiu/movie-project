@@ -26,7 +26,7 @@ def provide_movies_to_user(num):
 # Helper function 1 -- to exclude movies that users already seen from the recommendation list
 def exclude_seen_movies(u_select):
     # get seen movie id from user feedback
-    seen_id_list = [m for m,r in u_select if r!=0]
+    seen_id_list = [m for m,r in u_select]
     seen_name_list = [movie_lookup_dict[x] for x in seen_id_list]
     return seen_name_list
 
@@ -42,7 +42,7 @@ def get_similar_users(u_select):
 
     # create input array of same dimension for prediction
       # modify value of corresponding index to 10/-10
-    user_fb_arr = np.zeros((1,2807))
+    user_fb_arr = np.zeros((1,1468))
     for idx1 in p_idx_list:
         user_fb_arr[0,idx1] = 10
     for idx2 in n_idx_list:
