@@ -42,7 +42,7 @@ def get_similar_users(u_select):
 
     # create input array of same dimension for prediction
       # modify value of corresponding index to 10/-10
-    user_fb_arr = np.zeros((1,1468))
+    user_fb_arr = np.zeros((1,2807))
     for idx1 in p_idx_list:
         user_fb_arr[0,idx1] = 10
     for idx2 in n_idx_list:
