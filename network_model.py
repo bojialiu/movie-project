@@ -66,10 +66,10 @@ def list_to_dict(values):
 def kmeans_score(movie1, movie2):
     movie1_label = kmeans_dict[movie1]
     movie2_label = kmeans_dict[movie2]
-    summary_score = dict.fromkeys(metadata_df['title'], 1)
+    summary_score = dict.fromkeys(metadata_df['title'], 0)
     for movie in summary_score:
         if kmeans_dict[movie] == movie1_label or kmeans_dict[movie] == movie2_label:
-            summary_score[movie] = 2
+            summary_score[movie] = 1
     summary_score[movie1] = 0
     summary_score[movie2] = 0
     return summary_score
@@ -111,10 +111,10 @@ def match_genres(movie1, movie2):
             intersect = set(['Drama'])
             break
 
-    genre_score = dict.fromkeys(metadata_df['title'], 1)
+    genre_score = dict.fromkeys(metadata_df['title'], 0)
     for i in metadata_df.index:
         if intersect.issubset(metadata_df['genres'].iloc[i]):
-            genre_score[metadata_df['title'].iloc[i]] = 2
+            genre_score[metadata_df['title'].iloc[i]] = 1
 
     #to help avoid picking input movies for output
     genre_score[movie1] = 0
@@ -133,11 +133,11 @@ def range_score(movie1, movie2, prop):
     max_score = max(movie1, movie2)
     min_score = min(movie1, movie2)
 
-    score = dict.fromkeys(metadata_df['title'], 1)
+    score = dict.fromkeys(metadata_df['title'], 0)
     for index in metadata_df.index:
         this_move_score = float(metadata_df[prop].iloc[index])
         if this_move_score > min_score and this_move_score < max_score:
-            score[metadata_df['title'].iloc[index]] = 2
+            score[metadata_df['title'].iloc[index]] = 1
 
     score[movie1] = 0
     score[movie2] = 0
