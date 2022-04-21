@@ -21,6 +21,7 @@ This project holds two different machine learning models to help you select the 
 ## Models in Jupyter
 - Capstone.ipynb -- network-based system that recommend the most similar movie based on two movies user inputs
 - user-based recommender.ipynb -- user-based collavrative filtering system that recommend movie based on user behaviour 
+- user-based recommender_optimized.ipynb -- Optimized model. not deployed due to host memory limitation. 
 
 
 ## How To Use
@@ -37,7 +38,5 @@ This project is distributed under MIT Licence.
 
 ## Team Members
 - Chloe Zhang ([GitHub](https://github.com/eolhcz))
-- Michael Conrad
-- Bojia Liu
 - Michael Conrad ([GitHub](https://github.com/conradma))
 - Bojia Liu ([GitHub](https://github.com/bojialiu))
