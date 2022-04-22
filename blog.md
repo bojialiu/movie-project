@@ -40,10 +40,10 @@ To achieve this, we use the ratings from the IMDb data of over 9000 movies as we
 
 The machine learning model we use on this data is Nearest Neighbours and train this model on the user-movie matrix. Feeding this model with user’s feedback yields this user’s nearest neighbours, which are considered as people with similar movie taste. What kind of data we collect from the user? As mentioned before, it would be more user-friendly if the web app provides users with movie titles, rather than allowing the user to choose their own. Hence, our app shows a user 8 random movies from the database and stores the user’s feedback (as in like/dislike/never watched) as a single-row array with the same length as the user-movie matrix. We then feed this array into the KNN model. Upon getting the nearest neighbours, our model will collect movies that are favoured by these neighbours and recommend the ones that are most like the user’s input preferences.
 
-<img src="/assets/Picture1.png" alt="drawing" width="700"/>
+<img src="/assets/Picture1.png" alt="drawing" width="300"/>
 (Figure 2. e.g. of movies shown to user)
 
-<img src="/assets/Picture2.png" alt="drawing" width="700"/>
+<img src="/assets/Picture2.png" alt="drawing" width="300"/>
 (Figure 3. e.g. of movie recommendation upon user feedback)
 
 ## This is the current deployed version.
