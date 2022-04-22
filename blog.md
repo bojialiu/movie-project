@@ -89,3 +89,7 @@ After a few rounds of testing and collecting feedback from family and friends, w
 ### Deployment with Streamlit
 
 Deploying a web app with Streamlit is a breeze. Streamlit allows users to deploy their web app directly from their GitHub repo. Users can save secrets like API keys for each app when external databases like GoogleSheet API are used. Given GitHub can’t hold files with size > 100MB (there are workarounds, for example, GitHub Large File Storage), saving all original datasets online is clearly not an option. To minimize the memory run-time of each model, we removed any original datasets and only saved fully cleansed metadata and pickled trained models for the app to read from.
+
+## Statement of work
+
+The network-based model is implemented by Michael Conrad and the collabrative filtering model is implemented by Bojia Liu. The web app design and deployment is implemented by Chloe Zhang. 
