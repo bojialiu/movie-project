@@ -40,8 +40,11 @@ To achieve this, we use the ratings from the IMDb data of over 9000 movies as we
 
 The machine learning model we use on this data is Nearest Neighbours and train this model on the user-movie matrix. Feeding this model with user’s feedback yields this user’s nearest neighbours, which are considered as people with similar movie taste. What kind of data we collect from the user? As mentioned before, it would be more user-friendly if the web app provides users with movie titles, rather than allowing the user to choose their own. Hence, our app shows a user 8 random movies from the database and stores the user’s feedback (as in like/dislike/never watched) as a single-row array with the same length as the user-movie matrix. We then feed this array into the KNN model. Upon getting the nearest neighbours, our model will collect movies that are favoured by these neighbours and recommend the ones that are most like the user’s input preferences.
 
-<img src="/assets/network.png" alt="drawing" width="700"/>
-(The model selection page)
+<img src="/assets/Picture1.png" alt="drawing" width="700"/>
+(Figure 2. e.g. of movies shown to user)
+
+<img src="/assets/Picture2.png" alt="drawing" width="700"/>
+(Figure 3. e.g. of movie recommendation upon user feedback)
 
 ## This is the current deployed version.
 We also optimized the collaborative filtering model by conducting more detailed data pruning, training on larger datasets and parameter tuning. The current KNN model is trained on a wide form data. With further development, we think it might prove more accurate when long form data is used. With more users and less movies, it is more likely to find neighbours in shorter distances thereby improving recommendations to the user. A smaller selection of movies also reduces the chance that the function provides users with unpopular movies and helps to get more valid feedback. However, the optimised model utilises an 80000*1400 matrix which takes up a lot of memory and causes timeout issues that we cannot deploy with our current app interface (source code is provided on github). Hopefully, this problem can be fixed in future iteration of this project.  
@@ -54,7 +57,7 @@ A model selection page
 A page for Network + NLP Model
 A page for Collaborative Filtering Model
 
-<img src="/assets/network.png" alt="drawing" width="700"/>
+<img src="/assets/Picture3.png" alt="drawing" width="700"/>
 (The model selection page)
 
 ### Web page for Network + NLP Model
@@ -66,7 +69,7 @@ To solve this issue, we created a temporary file to cache the random movies and 
 
 The rest of the steps are much more straightforward for us. The web app will feed our model with two user-entered movies, then generate a new movie. Next, the app will find the corresponding movie information (such as title, cast, director, IMDb rating, introduction, etc.) from our metadata dictionary created in the previous steps, and display them nicely at the bottom of the page.
 
-<img src="/assets/network.png" alt="drawing" width="700"/>
+<img src="/assets/Picture4.png" alt="drawing" width="700"/>
 (Example output from our Network+NLP model. When user input ironman + titanic, we got “The Fifth Element” as the result)
 
 When time allowed, we’d also like to add movie posters to the result page as our next step. We found the TMDB API (https://developers.themoviedb.org/3/getting-started) can provide such services at no cost.
@@ -81,7 +84,7 @@ drop-down list
 selection slider 
 After a few rounds of testing and collecting feedback from family and friends, we decided to use the selection slider option. This design not only looks neater but can also be easily operated on mobile platforms. Unfortunately, when deploying this part using Streamlit, we found the font size and design of slider titles are not adjustable. The lesson we learn is that when the UI design of your data science web app is important, Streamlit may not be your best choice because of its limitations.
 
-<img src="/assets/network.png" alt="drawing" width="700"/>
+<img src="/assets/Picture5.png" alt="drawing" width="700"/>
 (For better user experience, we also added a button to refresh the movie list, this is especially useful when the user hasn’t seen most of the movies in the list)
 
 ### Deployment with Streamlit
