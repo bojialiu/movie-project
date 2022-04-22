@@ -40,11 +40,9 @@ To achieve this, we use the ratings from the IMDb data of over 9000 movies as we
 
 The machine learning model we use on this data is Nearest Neighbours and train this model on the user-movie matrix. Feeding this model with user’s feedback yields this user’s nearest neighbours, which are considered as people with similar movie taste. What kind of data we collect from the user? As mentioned before, it would be more user-friendly if the web app provides users with movie titles, rather than allowing the user to choose their own. Hence, our app shows a user 8 random movies from the database and stores the user’s feedback (as in like/dislike/never watched) as a single-row array with the same length as the user-movie matrix. We then feed this array into the KNN model. Upon getting the nearest neighbours, our model will collect movies that are favoured by these neighbours and recommend the ones that are most like the user’s input preferences.
 
-<img src="/assets/Picture1.png" alt="drawing" width="300"/>
-(Figure 2. e.g. of movies shown to user)
+<img src="/assets/Picture1.png" alt="drawing" width="300"/> (Figure 2. e.g. of movies shown to user)
 
-<img src="/assets/Picture2.png" alt="drawing" width="300"/>
-(Figure 3. e.g. of movie recommendation upon user feedback)
+<img src="/assets/Picture2.png" alt="drawing" width="300"/> (Figure 3. e.g. of movie recommendation upon user feedback)
 
 ## This is the current deployed version.
 We also optimized the collaborative filtering model by conducting more detailed data pruning, training on larger datasets and parameter tuning. The current KNN model is trained on a wide form data. With further development, we think it might prove more accurate when long form data is used. With more users and less movies, it is more likely to find neighbours in shorter distances thereby improving recommendations to the user. A smaller selection of movies also reduces the chance that the function provides users with unpopular movies and helps to get more valid feedback. However, the optimised model utilises an 80000*1400 matrix which takes up a lot of memory and causes timeout issues that we cannot deploy with our current app interface (source code is provided on github). Hopefully, this problem can be fixed in future iteration of this project.  
