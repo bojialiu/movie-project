@@ -1,6 +1,7 @@
 # MADS Capstone - Project Movie Night
 
 ## Introduction
+
 We started out with a simple problem. Picture two people, showing up to movie night with two totally different movies, and neither of them want to compromise. Our goal was to create a compromise for them, by looking at the features that make their favorite movies their favorite and selecting a new movie that will make them both happy. Of course, we didn’t want to leave out those among us who enjoy a good movie alone, so we also wanted to create a similar solution for anyone who just can’t think of a movie to watch.
 
 To start out, we tried to find some comprehensive datasets that would contain a lot of popular movies, but also some not so popular movies. We landed with three datasets that covered a wide spectrum of films but also provided us with many of the features we wanted to work with. The first was from IMDb and contained a lot of the metadata that’s typically found on the website. The second was from Kaggle and contained ratings and reviews and the final database was of summaries scraped from Wikipedia. With some routine data cleaning, we grabbed the features we wanted from each dataset and put it all together in a single dataframe.
@@ -27,7 +28,7 @@ We used the respective scores of the two input movies to create a bounded range.
 ### Now to combine the scores.
 Now that we had generated scores for individual features, we needed to find a way to combine them in order to produce a meaningful, and accurate, output movie. To achieve this, we added a weight to adjust each score and then summed each weighted score for each movie and output the movie with the highest score. Initially we’ve chosen scores that we think anecdotally make sense. Since we used a custom scoring method, it was difficult to come up with a method to validate the performance of our model. Ultimately, we decided that the best way to validate it would be to gather user feedback over time and incorporate it into future iterations of the model.
 
-## Collaborative model
+## Model #2 The Collaborative Model
 
 ### There is another scenario for our web app.
 Imagine a night when you are hanging out alone and in the mood for a movie but you don’t have anything in mind: this is where our collaborative model comes to the rescue.
@@ -57,7 +58,6 @@ A page for Collaborative Filtering Model
 (The model selection page)
 
 ### Web page for Network + NLP Model
-
 This page allows users to input two different movies, and use our networl+NLP model to generate a new one in real-time. To begin with, we put two text-input fields on the page, along with a submit button. Although our model can take imperfect spelling using fuzzy logic, it was really annoying for us to type in two different movies each time we test the app. To make the app testing easier for both us as developers and users who just want to play with the app, we also put a “Try Something Random!” button, so we don’t have to manually input movie names every time we open the app. The logic is pretty simple, right?
 
 However, that’s the moment we found Streamlit was not as powerful as it sounds in the beginning. One big issue with Streamlit is that the framework refreshes the entire app whenever it takes a new input. This is reasonable because when a user interacts with the buttons and sliders, we want the content of the page, an interactive visualization, for example, to change along. However, this means it doesn’t allow us to go read the user’s inputs and feedback to the model or script more than one time. In our case, if we want to randomly select two movies and put them in the input box, after the “Try Something Random!” button is clicked, the random movies variables will be generated and removed at the same time, because the app refreshes!
@@ -87,5 +87,3 @@ After a few rounds of testing and collecting feedback from family and friends, w
 ### Deployment with Streamlit
 
 Deploying a web app with Streamlit is a breeze. Streamlit allows users to deploy their web app directly from their GitHub repo. Users can save secrets like API keys for each app when external databases like GoogleSheet API are used. Given GitHub can’t hold files with size > 100MB (there are workarounds, for example, GitHub Large File Storage), saving all original datasets online is clearly not an option. To minimize the memory run-time of each model, we removed any original datasets and only saved fully cleansed metadata and pickled trained models for the app to read from.
-
-
